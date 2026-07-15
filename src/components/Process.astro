@@ -1,0 +1,103 @@
+---
+const steps = [
+  {
+    num: "01",
+    title: "Place your order",
+    description:
+      "Once you order, you'll get an email from us asking for your photos, ideas, and reference details — that's how we get started.",
+  },
+  {
+    num: "02",
+    title: "Send your references",
+    description:
+      "Email your photos, pose ideas, outfit details, and any special requests. Our sculptor reviews everything and asks questions as needed.",
+  },
+  {
+    num: "03",
+    title: "Sculpting & customization",
+    description:
+      "We handcraft your custom miniature sculpture based on your references, with careful attention to likeness, clothing, and unique details.",
+  },
+  {
+    num: "04",
+    title: "Preview & approve",
+    description:
+      "You receive progress updates or preview images to review, plus revisions where available to make sure everything looks right before completion.",
+  },
+  {
+    num: "05",
+    title: "Finish & ship",
+    description:
+      "Once approved, we complete the finishing touches, package your sculpture securely, and ship it straight to your door.",
+  },
+];
+---
+
+<section class="process" id="process">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow">How it works</p>
+      <h2>From your first email to a finished sculpt — in five steps.</h2>
+    </div>
+
+    <ol class="timeline" data-reveal-group="timeline">
+      {steps.map((s, i) => (
+        <li class="step" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+          <span class="step-num">{s.num}</span>
+          <h3>{s.title}</h3>
+          <p>{s.description}</p>
+        </li>
+      ))}
+    </ol>
+
+    <div class="process-cta" data-reveal>
+      <a href="#connect" class="btn btn-primary">Start your piece today →</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .process { background: var(--paper-2); }
+
+  .timeline {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 36px;
+    position: relative;
+    counter-reset: step;
+  }
+
+  .step {
+    position: relative;
+    padding-top: 26px;
+    border-top: 1px dashed var(--line-2);
+  }
+
+  .step-num {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--gold);
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+
+  .step h3 {
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+  }
+
+  .step p {
+    color: var(--muted);
+    font-size: 0.94rem;
+    line-height: 1.65;
+  }
+
+  .process-cta {
+    margin-top: 56px;
+    text-align: center;
+  }
+
+  @media (min-width: 900px) {
+    .timeline { grid-template-columns: repeat(5, 1fr); gap: 28px; }
+  }
+</style>

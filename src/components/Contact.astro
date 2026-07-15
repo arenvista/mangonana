@@ -1,0 +1,172 @@
+---
+---
+
+<section class="contact" id="connect">
+  <div class="container contact-inner">
+    <div class="contact-art" data-reveal="left">
+      <div class="art-plate" data-parallax="0.08">
+        <span class="art-tag">Currently booking new commissions</span>
+      </div>
+    </div>
+
+    <div class="contact-form-wrap" data-reveal="right">
+      <p class="eyebrow">Get in touch</p>
+      <h2>Let's sculpt something together.</h2>
+      <p class="contact-sub">
+        Tell us about your idea and we'll follow up with next steps and a
+        quote — usually within one business day.
+      </p>
+
+      <form id="contact-form" novalidate>
+        <div class="grid-2">
+          <div class="field">
+            <label for="firstName">First name</label>
+            <input id="firstName" name="firstName" type="text" placeholder="First name" required />
+          </div>
+          <div class="field">
+            <label for="lastName">Last name</label>
+            <input id="lastName" name="lastName" type="text" placeholder="Last name" required />
+          </div>
+          <div class="field">
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email" placeholder="Email address" required />
+          </div>
+          <div class="field">
+            <label for="phone">Phone no.</label>
+            <input id="phone" name="phone" type="tel" placeholder="Phone no." />
+          </div>
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="6" placeholder="Tell us about the piece you have in mind" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="contact-submit">
+          <span>Send message</span>
+        </button>
+
+        <p id="contact-status" class="contact-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact { background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper-3) 100%); }
+
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    align-items: flex-start;
+  }
+
+  .art-plate {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(150deg, var(--gold) 0%, #7a5a22 100%);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: flex-end;
+    padding: 26px;
+  }
+
+  .art-tag {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--paper);
+    background: rgba(28, 26, 23, 0.28);
+    padding: 8px 14px;
+    border-radius: 999px;
+  }
+
+  .contact-form-wrap h2 { margin-top: 14px; font-size: clamp(2rem, 4.4vw, 3rem); }
+  .contact-sub { margin-top: 16px; color: var(--muted); max-width: 46ch; }
+
+  form { margin-top: 32px; }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-size: 0.78rem;
+    font-family: var(--mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  input, textarea {
+    width: 100%;
+    background: var(--paper);
+    border: 1px solid var(--line-2);
+    border-radius: 14px;
+    padding: 15px 18px;
+    font-size: 1rem;
+    transition: border-color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
+  }
+  textarea { resize: vertical; min-height: 140px; }
+  input:focus, textarea:focus { border-color: var(--plum); background: #fff; }
+  input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.8; }
+
+  #contact-submit { margin-top: 6px; }
+  #contact-submit[disabled] { opacity: 0.6; cursor: progress; }
+
+  .contact-status { margin-top: 16px; font-size: 0.92rem; }
+
+  @media (min-width: 640px) {
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (min-width: 960px) {
+    .contact-inner { grid-template-columns: 0.85fr 1.15fr; }
+  }
+</style>
+
+<script>
+  const form = document.getElementById("contact-form") as HTMLFormElement | null;
+  const submitBtn = document.getElementById("contact-submit") as HTMLButtonElement | null;
+  const status = document.getElementById("contact-status");
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!form || !submitBtn || !status) return;
+
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    submitBtn.disabled = true;
+    submitBtn.querySelector("span")!.textContent = "Sending...";
+    status.textContent = "";
+    status.className = "contact-status";
+
+    try {
+      const response = await fetch("http://localhost:5000/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json;charset=utf-8" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok || result?.code !== 200) {
+        throw new Error(result?.message || "Something went wrong, please try again later.");
+      }
+
+      status.textContent = "Message sent successfully.";
+      status.classList.add("form-success");
+      form.reset();
+    } catch (err) {
+      status.textContent = err instanceof Error ? err.message : "Something went wrong, please try again later.";
+      status.classList.add("form-danger");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.querySelector("span")!.textContent = "Send message";
+    }
+  });
+</script>

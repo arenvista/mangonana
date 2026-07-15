@@ -1,0 +1,69 @@
+---
+const stats = [
+  { value: "390", suffix: "+", stars: true, label: "verified Etsy reviews" },
+  { value: "1", suffix: "", label: "minimum order — print just one if you like" },
+  { value: "∞", suffix: "", label: "free revisions, until it's perfect" },
+  { value: "50", suffix: "+", label: "countries shipped to — US, Canada, EU, UK & Australia" },
+];
+---
+
+<section class="stats" aria-label="Studio statistics">
+  <div class="container stats-grid" data-reveal-group="stats">
+    {stats.map((s, i) => (
+      <div class="stat" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+        <p class="stat-num">
+          {s.value}<span class="stat-plus">{s.suffix}</span>
+        </p>
+        {s.stars && <div class="stat-stars" aria-hidden="true">★★★★★</div>}
+        <p class="stat-label">{s.label}</p>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .stats {
+    background: var(--paper-2);
+    border-block: 1px solid var(--line);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px 24px;
+    padding-block: 56px;
+  }
+
+  .stat { position: relative; }
+  .stat:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -12px;
+    width: 1px;
+    background: var(--line-2);
+    display: none;
+  }
+
+  .stat-num {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 4.5vw, 3rem);
+    color: var(--plum);
+  }
+  .stat-plus { font-size: 1.2rem; color: var(--gold); vertical-align: super; }
+
+  .stat-stars { color: var(--gold); letter-spacing: 3px; margin-top: 6px; font-size: 0.9rem; }
+
+  .stat-label {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--muted);
+    max-width: 24ch;
+  }
+
+  @media (min-width: 700px) {
+    .stats-grid { grid-template-columns: repeat(4, 1fr); }
+    .stat:not(:last-child)::after { display: block; }
+  }
+</style>

@@ -1,0 +1,103 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="brand-mark">M</span>
+      <span>Mangonanas Miniatures</span>
+    </div>
+
+    <nav class="footer-links" aria-label="Footer">
+      <a href="#home">Home</a>
+      <a href="#products">Products</a>
+      <a href="#process">Process</a>
+      <a href="#connect">Connect</a>
+      <a href="/resume">Curriculum vitae</a>
+    </nav>
+
+    <div class="footer-social">
+      <a href="https://www.linkedin.com/in/aren-vista-079199203/" aria-label="LinkedIn">in</a>
+      <a href="https://github.com/arenvista" aria-label="GitHub">gh</a>
+      <a href="https://gitlab.com/arenvista" aria-label="GitLab">gl</a>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© {currentYear} Mangonanas Miniatures. Caffeine is always welcome.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--ink);
+    color: var(--paper);
+    padding-block: 56px 26px;
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid rgba(247, 242, 231, 0.14);
+  }
+
+  .footer-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--serif);
+    font-size: 1.2rem;
+  }
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 0.92rem;
+    opacity: 0.85;
+  }
+  .footer-links a:hover { opacity: 0.7; }
+
+  .footer-social { display: flex; gap: 10px; }
+  .footer-social a {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid rgba(247, 242, 231, 0.24);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    transition: background-color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
+  }
+  .footer-social a:hover {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--ink);
+  }
+
+  .footer-bottom {
+    padding-top: 22px;
+    font-size: 0.82rem;
+    opacity: 0.6;
+  }
+
+  @media (min-width: 800px) {
+    .footer-inner { flex-direction: row; align-items: center; justify-content: space-between; }
+  }
+</style>

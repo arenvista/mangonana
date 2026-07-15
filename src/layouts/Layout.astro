@@ -1,0 +1,39 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = "Mangonanas Miniatures — hand-sculpted custom miniatures, keychains, and figurines. 390+ five-star reviews on Etsy.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f7f2e7" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+    <script>
+      import { initScrollReveal, initParallax } from "../lib/reveal";
+
+      document.addEventListener("DOMContentLoaded", () => {
+        initScrollReveal();
+        initParallax();
+      });
+    </script>
+  </body>
+</html>

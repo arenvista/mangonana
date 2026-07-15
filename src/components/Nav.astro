@@ -1,0 +1,179 @@
+---
+const links = [
+  { href: "#home", label: "Home" },
+  { href: "#products", label: "Products" },
+  { href: "#process", label: "Process" },
+  { href: "#connect", label: "Connect" },
+];
+---
+
+<header class="nav" id="site-nav">
+  <div class="container nav-inner">
+    <a href="#home" class="brand">
+      <span class="brand-mark">M</span>
+      <span class="brand-word">MangoNanas</span>
+    </a>
+
+    <nav class="links" aria-label="Primary">
+      {links.map((l) => (
+        <a href={l.href}>{l.label}</a>
+      ))}
+    </nav>
+
+    <div class="nav-cta">
+      <a href="#connect" class="btn btn-primary btn-small">Order now</a>
+    </div>
+
+    <button
+      class="menu-toggle"
+      id="menu-toggle"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Toggle menu"
+    >
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu">
+    {links.map((l) => (
+      <a href={l.href}>{l.label}</a>
+    ))}
+    <a href="#connect" class="btn btn-primary">Order now</a>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: fixed;
+    inset-inline: 0;
+    top: 0;
+    z-index: 100;
+    padding-block: 22px;
+    transition: padding var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out), backdrop-filter var(--dur-1) var(--ease-out);
+  }
+
+  .nav.scrolled {
+    padding-block: 12px;
+    background: rgba(247, 242, 231, 0.85);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 12px 30px -18px rgba(28, 26, 23, 0.3);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--serif);
+    font-size: 1.2rem;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--plum);
+    color: var(--paper);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+
+  .links {
+    display: none;
+    align-items: center;
+    gap: 34px;
+    font-size: 0.95rem;
+  }
+
+  .links a {
+    position: relative;
+    opacity: 0.75;
+    transition: opacity var(--dur-1) var(--ease-out);
+  }
+  .links a:hover { opacity: 1; }
+  .links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: width var(--dur-1) var(--ease-out);
+  }
+  .links a:hover::after { width: 100%; }
+
+  .nav-cta { display: none; }
+
+  .btn-small { padding: 11px 24px; font-size: 0.85rem; }
+
+  .menu-toggle {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .menu-toggle span {
+    width: 22px;
+    height: 1.5px;
+    background: var(--ink);
+    transition: transform var(--dur-1) var(--ease-out), opacity var(--dur-1) var(--ease-out);
+  }
+  .menu-toggle[aria-expanded="true"] span:first-child { transform: translateY(3.75px) rotate(45deg); }
+  .menu-toggle[aria-expanded="true"] span:last-child { transform: translateY(-3.75px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 24px 26px;
+    background: rgba(247, 242, 231, 0.98);
+    border-bottom: 1px solid var(--line);
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    padding: 12px 4px;
+    font-size: 1.05rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .mobile-menu .btn { margin-top: 14px; justify-content: center; }
+
+  @media (min-width: 900px) {
+    .links, .nav-cta { display: inline-flex; }
+    .menu-toggle { display: none; }
+  }
+</style>
+
+<script>
+  import { initScrollState } from "../lib/reveal";
+
+  const nav = document.getElementById("site-nav");
+  if (nav) initScrollState(nav, 30);
+
+  const toggle = document.getElementById("menu-toggle");
+  const menu = document.getElementById("mobile-menu");
+  toggle?.addEventListener("click", () => {
+    const isOpen = menu?.classList.toggle("open");
+    toggle.setAttribute("aria-expanded", String(Boolean(isOpen)));
+  });
+  menu?.querySelectorAll("a").forEach((a) =>
+    a.addEventListener("click", () => {
+      menu.classList.remove("open");
+      toggle?.setAttribute("aria-expanded", "false");
+    })
+  );
+</script>

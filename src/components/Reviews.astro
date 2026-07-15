@@ -1,0 +1,139 @@
+---
+const reviews = [
+  { id: 1, quote: "This was such a meaningful gift! The artist captured every little detail perfectly, and the whole process was smooth from start to finish. I highly recommend them.", author: "Ryan Clark", date: "Jun 17, 2026" },
+  { id: 2, quote: "Exceeded my expectations and the sculpture looked amazing! I'm so excited to give this custom miniature to my dad.", author: "Jenna", date: "Jun 15, 2026" },
+  { id: 3, quote: "Can't recommend this shop enough. I sent in reference photos for a custom piece, and the final sculpture captured the pose and expression so well.", author: "Cara", date: "Jun 14, 2026" },
+  { id: 4, quote: "Fantastic service from start to finish. The team helped me choose the right base and finish for my miniature, and the final result looked polished and professional.", author: "James", date: "Jun 16, 2026" },
+  { id: 5, quote: "I needed a custom sculpture as a last-minute anniversary gift, and they completed it faster than I expected. The quality and likeness were excellent.", author: "Mina", date: "Jun 18, 2026" },
+  { id: 6, quote: "Really appreciated how patient the team was while I adjusted the design details. They even caught a small issue with the pose before production.", author: "Ethan", date: "Jun 20, 2026" },
+  { id: 7, quote: "I've ordered custom miniatures here more than once, and every piece has been detailed, well-crafted, and delivered exactly when promised.", author: "Sofia", date: "Jun 22, 2026" },
+  { id: 8, quote: "The final sculpture was incredibly detailed and looked even better in person than in the preview. Communication was clear throughout the process.", author: "Daniel", date: "Jun 24, 2026" },
+  { id: 9, quote: "Super friendly, quick, and detail-oriented. They made what could have been a stressful custom order feel simple and exciting from beginning to end.", author: "Priya", date: "Jun 26, 2026" },
+];
+---
+
+<section class="reviews">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow">What customers say</p>
+      <h2>390+ five-star reviews on Etsy.</h2>
+    </div>
+  </div>
+
+  <div class="reviews-viewport" data-reveal="scale">
+    <button class="rail-btn prev" id="reviews-prev" aria-label="Previous reviews">‹</button>
+    <div class="reviews-track" id="reviews-track">
+      {reviews.map((r) => (
+        <article class="review-card">
+          <div class="review-stars" aria-hidden="true">★★★★★</div>
+          <p class="review-quote">"{r.quote}"</p>
+          <div class="review-foot">
+            <span class="review-author">{r.author}</span>
+            <span class="review-date">{r.date}</span>
+          </div>
+        </article>
+      ))}
+    </div>
+    <button class="rail-btn next" id="reviews-next" aria-label="Next reviews">›</button>
+  </div>
+
+  <div class="container">
+    <div class="reviews-cta" data-reveal>
+      <a href="#connect" class="btn btn-ghost">View all 390+ reviews on Etsy ↗</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .reviews { background: var(--paper); }
+
+  .reviews-viewport {
+    position: relative;
+    margin-top: 44px;
+  }
+
+  .reviews-track {
+    display: flex;
+    gap: 22px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 4px clamp(24px, 6vw, calc((100vw - var(--container)) / 2 + 24px)) 20px;
+    scrollbar-width: none;
+  }
+  .reviews-track::-webkit-scrollbar { display: none; }
+
+  .review-card {
+    flex: 0 0 auto;
+    width: min(340px, 82vw);
+    scroll-snap-align: start;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 30px;
+    background: var(--paper-2);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .review-stars { color: var(--gold); letter-spacing: 3px; margin-bottom: 16px; }
+
+  .review-quote {
+    font-family: var(--serif);
+    font-size: 1.08rem;
+    line-height: 1.55;
+    flex-grow: 1;
+  }
+
+  .review-foot {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+  }
+  .review-author { font-weight: 600; }
+  .review-date { color: var(--muted); }
+
+  .rail-btn {
+    display: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    font-size: 1.6rem;
+    line-height: 1;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: background-color var(--dur-1) var(--ease-out);
+  }
+  .rail-btn:hover { background: var(--paper-3); }
+  .rail-btn.prev { left: 8px; }
+  .rail-btn.next { right: 8px; }
+
+  .reviews-cta { margin-top: 40px; text-align: center; }
+
+  @media (min-width: 900px) {
+    .rail-btn { display: flex; }
+  }
+</style>
+
+<script>
+  const track = document.getElementById("reviews-track");
+  const prev = document.getElementById("reviews-prev");
+  const next = document.getElementById("reviews-next");
+
+  const scrollByCard = (dir: number) => {
+    if (!track) return;
+    const card = track.querySelector<HTMLElement>(".review-card");
+    const distance = (card?.offsetWidth ?? 320) + 22;
+    track.scrollBy({ left: dir * distance, behavior: "smooth" });
+  };
+
+  prev?.addEventListener("click", () => scrollByCard(-1));
+  next?.addEventListener("click", () => scrollByCard(1));
+</script>

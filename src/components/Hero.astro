@@ -1,0 +1,240 @@
+---
+const rotatingWords = ["Keychains", "Miniatures", "Figurines", "Ornaments"];
+---
+
+<section class="hero" id="home">
+  <div class="container hero-inner">
+    <div class="hero-copy" data-reveal>
+      <p class="eyebrow">Hand-sculpted since 2020</p>
+      <h1 class="hero-title">
+        Custom <span class="rotator" id="rotator" data-words={JSON.stringify(rotatingWords)}
+          >Keychains</span
+        ><span class="cursor" aria-hidden="true">|</span>
+      </h1>
+      <p class="hero-sub">
+        Welcome to my small studio, where each hand-sculpted piece is shaped with
+        care, character, and a love for handmade art. Browse one-of-a-kind
+        creations made to bring warmth, texture, and a personal touch to your
+        home or collection.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#connect" class="btn btn-primary">Order now →</a>
+        <div class="hero-meta">
+          <span class="stars" aria-label="5 out of 5 stars">★★★★★</span>
+          <span>390+ five-star reviews on Etsy</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-art" data-reveal="scale" style="--reveal-delay:120ms">
+      <div class="art-block" data-parallax="0.12">
+        <span class="art-tag">Piece №0134 — in progress</span>
+        <div class="art-texture" aria-hidden="true"></div>
+      </div>
+      <div class="art-badge">
+        <strong>5+ yrs</strong>
+        <span>sculpting experience</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-marquee" aria-hidden="true">
+    <div class="marquee-track">
+      {Array.from({ length: 2 }).map(() => (
+        <span>
+          Keychains &nbsp;·&nbsp; Miniatures &nbsp;·&nbsp; Figurines &nbsp;·&nbsp; Ornaments &nbsp;·&nbsp; Made
+          to order &nbsp;·&nbsp;
+        </span>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-top: clamp(140px, 20vw, 200px);
+    padding-bottom: clamp(40px, 6vw, 60px);
+    position: relative;
+    background:
+      radial-gradient(60% 60% at 85% 10%, var(--plum-tint) 0%, transparent 70%),
+      var(--paper);
+    overflow: hidden;
+  }
+
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+.hero-title {
+  margin-top: 5.4px; 
+font-size: clamp(1.82rem, 5.18vw, 3.78rem); /* All values * 0.7 */
+  max-width: 100%;    /* Allows wrapping only when the screen is too small */
+}
+
+  .rotator {
+    color: var(--plum);
+    font-style: italic;
+  }
+
+  .cursor {
+    display: inline-block;
+    margin-left: 2px;
+    color: var(--gold);
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .hero-sub {
+    margin-top: 24px;
+    max-width: 52ch;
+    font-size: 1.1rem;
+    color: var(--ink-2);
+    line-height: 1.7;
+  }
+
+  .hero-actions {
+    margin-top: 34px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 26px;
+  }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.92rem;
+    color: var(--ink-2);
+  }
+
+  .stars { color: var(--gold); letter-spacing: 2px; }
+
+  .hero-art { position: relative; }
+
+  .art-block {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(155deg, var(--plum) 0%, var(--plum-2) 100%);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    padding: 26px;
+  }
+
+  .art-texture {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(247, 242, 231, 0.08) 1px, transparent 1px);
+    background-size: 14px 14px;
+    opacity: 0.6;
+  }
+
+  .art-tag {
+    position: relative;
+    z-index: 1;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: var(--gold-soft);
+    background: rgba(28, 26, 23, 0.28);
+    padding: 8px 14px;
+    border-radius: 999px;
+    backdrop-filter: blur(4px);
+  }
+
+  .art-badge {
+    position: absolute;
+    bottom: -22px;
+    left: -18px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 18px 22px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .art-badge strong { font-family: var(--serif); font-size: 1.4rem; }
+  .art-badge span { font-size: 0.78rem; color: var(--muted); }
+
+  .hero-marquee {
+    margin-top: clamp(56px, 8vw, 96px);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+    white-space: nowrap;
+    padding-block: 16px;
+  }
+
+  .marquee-track {
+    display: inline-flex;
+    animation: marquee 26s linear infinite;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  @media (min-width: 900px) {
+    .hero-inner {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+    .art-block { aspect-ratio: 3 / 4; }
+  }
+</style>
+
+<script>
+  const el = document.getElementById("rotator");
+  if (el) {
+    const words: string[] = JSON.parse(el.dataset.words ?? "[]");
+    const PAUSE = 1600;
+    const RESET_DELAY = 400;
+    let speed = 90;
+
+    let loop = 0;
+    let deleting = false;
+    let text = words[0] ?? "";
+    el.textContent = text;
+
+    const tick = () => {
+      const full = words[loop % words.length];
+      text = deleting ? full.substring(0, text.length - 1) : full.substring(0, text.length + 1);
+      el.textContent = text;
+
+      let delay = speed;
+
+      if (!deleting && text === full) {
+        deleting = true;
+        delay = PAUSE;
+      } else if (deleting && text === "") {
+        deleting = false;
+        loop += 1;
+        delay = RESET_DELAY;
+      } else if (deleting) {
+        delay = speed / 2;
+      }
+
+      window.setTimeout(tick, delay);
+    };
+
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!prefersReduced) {
+      window.setTimeout(tick, speed);
+    }
+  }
+</script>

@@ -1,0 +1,119 @@
+---
+const features = [
+  {
+    icon: "1+",
+    title: "Order one or many",
+    description:
+      "Need a single custom miniature as a keepsake or a full batch for gifts, events, or retail? We make each piece with the same care.",
+  },
+  {
+    icon: "★",
+    title: "Detailed, display-worthy craftsmanship",
+    description:
+      "Each sculpture is created with close attention to likeness, proportion, and finish, so it feels special whether displayed at home or given as a gift.",
+  },
+  {
+    icon: "→",
+    title: "Simple, guided process",
+    description:
+      "Share your photos, ideas, or reference images, and we'll guide you from concept to final sculpture with clear steps and personal support.",
+  },
+  {
+    icon: "∞",
+    title: "Unlimited revisions",
+    description:
+      "We include as many revisions as needed during the design stage. We don't complete the final piece until you're happy with the preview.",
+  },
+  {
+    icon: "⊕",
+    title: "Worldwide shipping",
+    description:
+      "We ship custom miniature sculptures internationally, with careful packaging to help your piece arrive safely wherever you are.",
+  },
+  {
+    icon: "♥",
+    title: "Personal service from a real artist",
+    description:
+      "You'll work directly with a dedicated creator who understands your vision and stays with your project from first message to finished sculpture.",
+  },
+];
+---
+
+<section class="features">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow">Why Mangonanas 🥭</p>
+      <h2>Custom miniature sculptures made just for you.</h2>
+    </div>
+
+    <div class="features-grid" data-reveal-group="features">
+      {features.map((f, i) => (
+        <div
+          class="feature"
+          data-reveal
+          style={`--reveal-delay:${i * 80}ms`}
+        >
+          <span class="feature-icon">{f.icon}</span>
+          <h3>{f.title}</h3>
+          <p>{f.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .features { background: var(--paper); }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--paper-2);
+  }
+
+  .feature {
+    padding: 40px 34px;
+    border-bottom: 1px solid var(--line);
+    transition: background-color var(--dur-1) var(--ease-out);
+  }
+  .feature:hover { background: var(--plum-tint); }
+  .feature:last-child { border-bottom: none; }
+
+  .feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: var(--plum-soft);
+    color: var(--plum);
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    margin-bottom: 22px;
+  }
+
+  .feature h3 {
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+  }
+
+  .feature p {
+    font-size: 0.94rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  @media (min-width: 720px) {
+    .features-grid { grid-template-columns: repeat(3, 1fr); }
+    .feature {
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+    }
+    .feature:nth-child(3n) { border-right: none; }
+    .feature:nth-last-child(-n+3) { border-bottom: none; }
+  }
+</style>

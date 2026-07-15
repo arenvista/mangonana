@@ -1,0 +1,130 @@
+---
+const categories = [
+  { title: "Miniatures", tone: "1" },
+  { title: "Keychains", tone: "2" },
+  { title: "Capybara", tone: "3" },
+];
+---
+
+<section class="products" id="products">
+  <div class="container">
+    <div class="products-head">
+      <div data-reveal>
+        <p class="eyebrow">What we sculpt</p>
+        <h2>A miniature for every story.</h2>
+        <p class="products-sub">
+          Browse custom sculptures for portraits, pets, celebrations and
+          one-of-a-kind keepsakes.
+        </p>
+      </div>
+      <a href="#connect" class="see-all" data-reveal style="--reveal-delay:120ms">
+        See all categories →
+      </a>
+    </div>
+
+    <div class="products-grid" data-reveal-group="products">
+      {categories.map((c, i) => (
+        <a href="#connect" class={`product-card tone-${c.tone}`} data-reveal="scale" style={`--reveal-delay:${i * 100}ms`}>
+          <div class="card-photo">
+            <span class="photo-badge">Photo</span>
+          </div>
+          <div class="card-foot">
+            <span class="card-title">{c.title}</span>
+            <span class="card-arrow">→</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .products { background: var(--paper-3); }
+
+  .products-head {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 44px;
+  }
+
+  .products-head h2 {
+    font-size: clamp(2rem, 4.4vw, 3.2rem);
+    margin-top: 12px;
+  }
+
+  .products-sub {
+    margin-top: 14px;
+    max-width: 42ch;
+    color: var(--muted);
+  }
+
+  .see-all {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--plum);
+    align-self: flex-start;
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur-1) var(--ease-out);
+  }
+  .see-all:hover { border-color: var(--plum); }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .product-card {
+    display: block;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out);
+  }
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .card-photo {
+    height: 220px;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .tone-1 .card-photo { background: linear-gradient(155deg, #5c3164, #3a1c40); }
+  .tone-2 .card-photo { background: linear-gradient(155deg, #ab7f34, #7a5a22); }
+  .tone-3 .card-photo { background: linear-gradient(155deg, #756b5e, #3a3530); }
+
+  .photo-badge {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--paper);
+    background: rgba(28, 26, 23, 0.35);
+    padding: 5px 12px;
+    border-radius: 999px;
+  }
+
+  .card-foot {
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--line);
+  }
+
+  .card-title { font-family: var(--serif); font-size: 1.15rem; }
+  .card-arrow { color: var(--plum); }
+
+  @media (min-width: 720px) {
+    .products-head { flex-direction: row; justify-content: space-between; align-items: flex-end; }
+    .products-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
