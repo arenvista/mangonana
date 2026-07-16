@@ -1,15 +1,16 @@
 ---
 const links = [
-  { href: "#home", label: "Home" },
-  { href: "#products", label: "Products" },
-  { href: "#process", label: "Process" },
-  { href: "#connect", label: "Connect" },
+  { href: "/#home", label: "Home" },
+  { href: "/catalog", label: "Catalog" },
+  { href: "/custom-order", label: "Custom order" },
+  { href: "/#process", label: "Process" },
+  { href: "/#connect", label: "Connect" },
 ];
 ---
 
 <header class="nav" id="site-nav">
   <div class="container nav-inner">
-    <a href="#home" class="brand">
+    <a href="/#home" class="brand">
       <span class="brand-mark">M</span>
       <span class="brand-word">MangoNanas</span>
     </a>
@@ -21,7 +22,11 @@ const links = [
     </nav>
 
     <div class="nav-cta">
-      <a href="#connect" class="btn btn-primary btn-small">Order now</a>
+      <a href="/checkout" class="cart-link" aria-label="View cart">
+        <span class="cart-icon" aria-hidden="true">🛒</span>
+        <span class="cart-count" id="nav-cart-count" hidden>0</span>
+      </a>
+      <a href="/catalog" class="btn btn-primary btn-small">Order now</a>
     </div>
 
     <button
@@ -40,7 +45,8 @@ const links = [
     {links.map((l) => (
       <a href={l.href}>{l.label}</a>
     ))}
-    <a href="#connect" class="btn btn-primary">Order now</a>
+    <a href="/checkout">Cart <span id="nav-cart-count-mobile"></span></a>
+    <a href="/catalog" class="btn btn-primary">Order now</a>
   </div>
 </header>
 
@@ -114,7 +120,37 @@ const links = [
   }
   .links a:hover::after { width: 100%; }
 
-  .nav-cta { display: none; }
+  .nav-cta { display: none; align-items: center; gap: 16px; }
+
+  .cart-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--line-2);
+    font-size: 1.05rem;
+    transition: background-color var(--dur-1) var(--ease-out);
+  }
+  .cart-link:hover { background: var(--plum-tint); }
+  .cart-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--plum);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   .btn-small { padding: 11px 24px; font-size: 0.85rem; }
 
@@ -160,6 +196,7 @@ const links = [
 
 <script>
   import { initScrollState } from "../lib/reveal";
+  import { cartCount } from "../lib/cart";
 
   const nav = document.getElementById("site-nav");
   if (nav) initScrollState(nav, 30);
@@ -176,4 +213,21 @@ const links = [
       toggle?.setAttribute("aria-expanded", "false");
     })
   );
+
+  function refreshCartBadge() {
+    const count = cartCount();
+    const badge = document.getElementById("nav-cart-count");
+    const mobileBadge = document.getElementById("nav-cart-count-mobile");
+    if (badge) {
+      badge.textContent = String(count);
+      badge.hidden = count === 0;
+    }
+    if (mobileBadge) {
+      mobileBadge.textContent = count > 0 ? `(${count})` : "";
+    }
+  }
+
+  refreshCartBadge();
+  window.addEventListener("cart:updated", refreshCartBadge);
+  window.addEventListener("storage", refreshCartBadge);
 </script>

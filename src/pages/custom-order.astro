@@ -1,0 +1,237 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout title="Custom order — Mangonanas Miniatures" description="Upload a reference photo and get a custom sculpture quote by email within 1-3 business days.">
+  <Nav />
+  <main>
+    <section class="custom-hero">
+      <div class="container">
+        <p class="eyebrow">Custom order</p>
+        <h1>Send a photo, get a quote.</h1>
+        <p class="custom-sub">
+          Not on the catalog? Upload a reference image and tell us what
+          you're picturing. There's no payment required to ask — we'll
+          reply by email with a custom quote within
+          <strong>1–3 business days</strong>.
+        </p>
+      </div>
+    </section>
+
+    <section class="custom section">
+      <div class="container custom-grid">
+        <form id="custom-order-form" class="custom-form" novalidate>
+          <div class="field">
+            <label for="name">Your name</label>
+            <input id="name" name="name" type="text" placeholder="Full name" required />
+          </div>
+
+          <div class="field">
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email" placeholder="Where we'll send your quote" required />
+          </div>
+
+          <div class="field">
+            <label for="notes">Tell us about the piece</label>
+            <textarea
+              id="notes"
+              name="notes"
+              rows="5"
+              placeholder="Character, pose, size you're picturing, deadline, anything else that helps"
+              required
+            ></textarea>
+          </div>
+
+          <div class="field">
+            <label for="image">Reference image</label>
+            <div class="file-drop" id="file-drop">
+              <input id="image" name="image" type="file" accept="image/*" required />
+              <p class="file-hint" id="file-hint">PNG, JPG, or WEBP — up to 15MB.</p>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary submit-btn" id="submit-btn">
+            <span>Send for a quote</span>
+          </button>
+          <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+        </form>
+
+        <aside class="custom-aside" data-reveal="right">
+          <h2>What happens next</h2>
+          <ol class="steps-list">
+            <li><strong>You submit</strong> — reference photo + a few details about what you want.</li>
+            <li><strong>We review</strong> — our sculptor looks over feasibility, size, and complexity.</li>
+            <li><strong>You get a quote</strong> — by email, within 1–3 business days, no obligation.</li>
+            <li><strong>You decide</strong> — accept, ask questions, or walk away — totally fine either way.</li>
+          </ol>
+          <p class="aside-note">
+            Prefer to just browse ready-made designs instead?
+            <a href="/catalog">Check the catalog →</a>
+          </p>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .custom-hero {
+    padding-top: clamp(140px, 18vw, 190px);
+    padding-bottom: 20px;
+    background:
+      radial-gradient(60% 60% at 85% 10%, var(--plum-tint) 0%, transparent 70%),
+      var(--paper);
+  }
+  .custom-hero h1 { margin-top: 12px; font-size: clamp(2.2rem, 5vw, 3.4rem); }
+  .custom-sub { margin-top: 16px; max-width: 58ch; color: var(--muted); font-size: 1.05rem; line-height: 1.65; }
+  .custom-sub strong { color: var(--plum); }
+
+  .custom { background: var(--paper); }
+
+  .custom-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .custom-form {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--paper-2);
+    padding: 32px;
+  }
+
+  .field { margin-bottom: 18px; }
+  .field label {
+    display: block;
+    font-size: 0.78rem;
+    font-family: var(--mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  input[type="text"], input[type="email"], textarea {
+    width: 100%;
+    background: var(--paper);
+    border: 1px solid var(--line-2);
+    border-radius: 14px;
+    padding: 15px 18px;
+    font-size: 1rem;
+  }
+  textarea { resize: vertical; min-height: 120px; }
+  input:focus, textarea:focus { border-color: var(--plum); background: #fff; }
+
+  .file-drop {
+    border: 1px dashed var(--line-2);
+    border-radius: 14px;
+    padding: 18px;
+    background: var(--paper);
+  }
+  .file-drop input[type="file"] { width: 100%; }
+  .file-hint { margin-top: 8px; font-size: 0.78rem; color: var(--muted); }
+
+  .submit-btn { width: 100%; justify-content: center; margin-top: 6px; }
+  .submit-btn[disabled] { opacity: 0.6; cursor: progress; }
+
+  .form-status { margin-top: 14px; font-size: 0.92rem; }
+  .form-status.form-success { color: #3f7d4f; font-weight: 600; }
+  .form-status.form-danger { color: #a5423a; font-weight: 600; }
+
+  .custom-aside {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    background: var(--paper-3);
+  }
+  .custom-aside h2 { font-size: 1.2rem; }
+  .steps-list {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    counter-reset: step;
+  }
+  .steps-list li {
+    padding-left: 30px;
+    position: relative;
+    font-size: 0.92rem;
+    color: var(--ink-2);
+    line-height: 1.55;
+  }
+  .steps-list li::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--plum);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .aside-note { margin-top: 22px; font-size: 0.85rem; color: var(--muted); }
+  .aside-note a { color: var(--plum); text-decoration: underline; }
+
+  @media (min-width: 900px) {
+    .custom-grid { grid-template-columns: 1.3fr 1fr; }
+  }
+</style>
+
+<script>
+  // API_BASE points at the standalone server (see server/index.mjs).
+  const API_BASE = "http://localhost:5000";
+  const MAX_FILE_BYTES = 15 * 1024 * 1024;
+
+  const form = document.getElementById("custom-order-form") as HTMLFormElement;
+  const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+  const status = document.getElementById("form-status")!;
+  const imageInput = document.getElementById("image") as HTMLInputElement;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const file = imageInput.files?.[0];
+    if (file && file.size > MAX_FILE_BYTES) {
+      status.textContent = "That image is over 15MB — please choose a smaller file.";
+      status.className = "form-status form-danger";
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.querySelector("span")!.textContent = "Sending...";
+    status.textContent = "";
+    status.className = "form-status";
+
+    try {
+      const formData = new FormData(form);
+      const response = await fetch(`${API_BASE}/custom-order`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(result?.error || "Something went wrong, please try again.");
+      }
+
+      window.location.href = "/custom-order/confirmation";
+    } catch (err) {
+      status.textContent = err instanceof Error ? err.message : "Something went wrong, please try again.";
+      status.classList.add("form-danger");
+      submitBtn.disabled = false;
+      submitBtn.querySelector("span")!.textContent = "Send for a quote";
+    }
+  });
+</script>

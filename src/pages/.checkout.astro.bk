@@ -1,0 +1,424 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+
+// Keep this list in sync with the PRODUCTS map in server/index.mjs —
+// the server is the source of truth for price, this is just for display.
+const products = [
+  {
+    id: "miniature",
+    tone: "1",
+    name: "Custom Miniature Sculpture",
+    description: "Hand-sculpted keepsake, roughly 4–6\" tall, based on your reference photos.",
+    price: 85,
+  },
+  {
+    id: "keychain",
+    tone: "2",
+    name: "Custom Keychain",
+    description: "A pocket-sized sculpted likeness on a sturdy keyring.",
+    price: 35,
+  },
+  {
+    id: "capybara",
+    tone: "3",
+    name: "Custom Capybara Sculpture",
+    description: "Because every collection needs a capybara. Fully custom pose and colours.",
+    price: 65,
+  },
+];
+---
+
+<Layout title="Checkout — Mangonanas Miniatures" description="Order your custom hand-sculpted piece and check out securely with Stripe.">
+  <Nav />
+  <main>
+    <section class="checkout-hero">
+      <div class="container">
+        <p class="eyebrow">Start your order</p>
+        <h1>Build your order.</h1>
+        <p class="checkout-sub">
+          Choose your piece(s), pick a quantity, and check out securely —
+          payment is handled by Stripe, so we never see or store your card
+          details.
+        </p>
+      </div>
+    </section>
+
+    <section class="checkout section">
+      <div class="container checkout-grid">
+        <div class="checkout-products" data-reveal-group="checkout-products">
+          {products.map((p, i) => (
+            <div
+              class={`product-row tone-${p.tone}`}
+              data-reveal
+              style={`--reveal-delay:${i * 80}ms`}
+              data-product-id={p.id}
+              data-product-price={p.price}
+            >
+              <div class="product-swatch" aria-hidden="true"></div>
+              <div class="product-info">
+                <h3>{p.name}</h3>
+                <p>{p.description}</p>
+                <span class="product-price">${p.price.toFixed(2)} each</span>
+              </div>
+              <div class="qty-control" role="group" aria-label={`Quantity for ${p.name}`}>
+                <button type="button" class="qty-btn" data-action="decrement" aria-label={`Decrease quantity of ${p.name}`}>−</button>
+                <input
+                  type="number"
+                  class="qty-input"
+                  min="0"
+                  max="20"
+                  step="1"
+                  value="0"
+                  inputmode="numeric"
+                  aria-label={`Quantity of ${p.name}`}
+                />
+                <button type="button" class="qty-btn" data-action="increment" aria-label={`Increase quantity of ${p.name}`}>+</button>
+              </div>
+            </div>
+          ))}
+
+          <label class="addon-row" data-reveal style={`--reveal-delay:${products.length * 80}ms`}>
+            <input type="checkbox" id="gift-box" name="giftBox" />
+            <span class="addon-copy">
+              <strong>Add gift box packaging</strong>
+              <small>Wrapped and boxed for gifting — $8.00</small>
+            </span>
+          </label>
+        </div>
+
+        <aside class="checkout-summary" data-reveal="right">
+          <h2>Order summary</h2>
+          <ul id="summary-lines" class="summary-lines">
+            <li class="summary-empty">No items selected yet.</li>
+          </ul>
+          <div class="summary-total">
+            <span>Estimated total</span>
+            <strong id="summary-total">$0.00</strong>
+          </div>
+          <p class="summary-note">
+            Final shipping is calculated by Stripe at checkout based on your
+            address.
+          </p>
+
+          <button type="button" class="btn btn-primary checkout-btn" id="checkout-btn" disabled>
+            <span>Proceed to secure checkout</span>
+          </button>
+          <p id="checkout-status" class="checkout-status" role="status" aria-live="polite"></p>
+
+          <div class="secure-note">
+            <span class="lock-icon" aria-hidden="true">🔒</span>
+            <span>
+              Payment is processed and verified by
+              <a href="https://stripe.com" target="_blank" rel="noopener noreferrer">Stripe</a>.
+              We never see or store your card number.
+            </span>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .checkout-hero {
+    padding-top: clamp(140px, 18vw, 190px);
+    padding-bottom: 20px;
+    background:
+      radial-gradient(60% 60% at 85% 10%, var(--plum-tint) 0%, transparent 70%),
+      var(--paper);
+  }
+  .checkout-hero h1 {
+    margin-top: 12px;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+  }
+  .checkout-sub {
+    margin-top: 16px;
+    max-width: 56ch;
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.65;
+  }
+
+  .checkout { background: var(--paper); }
+
+  .checkout-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .checkout-products {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .product-row {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 18px;
+    align-items: center;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--paper-2);
+  }
+
+  .product-swatch {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+  }
+  .tone-1 .product-swatch { background: linear-gradient(155deg, #5c3164, #3a1c40); }
+  .tone-2 .product-swatch { background: linear-gradient(155deg, #ab7f34, #7a5a22); }
+  .tone-3 .product-swatch { background: linear-gradient(155deg, #756b5e, #3a3530); }
+
+  .product-info h3 { font-size: 1.08rem; margin-bottom: 6px; }
+  .product-info p { color: var(--muted); font-size: 0.9rem; line-height: 1.55; max-width: 46ch; }
+  .product-price {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--plum);
+  }
+
+  .qty-control {
+    grid-column: 1 / -1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 14px;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    overflow: hidden;
+    width: fit-content;
+  }
+  .qty-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+    background: var(--paper);
+    transition: background-color var(--dur-1) var(--ease-out);
+  }
+  .qty-btn:hover { background: var(--plum-tint); }
+  .qty-input {
+    width: 48px;
+    height: 38px;
+    text-align: center;
+    border: none;
+    border-inline: 1px solid var(--line-2);
+    background: var(--paper);
+    -moz-appearance: textfield;
+  }
+  .qty-input::-webkit-outer-spin-button,
+  .qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .addon-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 22px;
+    border: 1px dashed var(--line-2);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+  }
+  .addon-row input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--plum); }
+  .addon-copy { display: flex; flex-direction: column; gap: 4px; }
+  .addon-copy small { color: var(--muted); }
+
+  .checkout-summary {
+    position: sticky;
+    top: 110px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--paper-2);
+    padding: 30px;
+  }
+  .checkout-summary h2 { font-size: 1.3rem; }
+
+  .summary-lines {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .summary-lines li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.92rem;
+    color: var(--ink-2);
+  }
+  .summary-empty { color: var(--muted); font-style: italic; }
+
+  .summary-total {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--serif);
+  }
+  .summary-total strong { font-size: 1.5rem; color: var(--plum); }
+
+  .summary-note {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .checkout-btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: 24px;
+  }
+  .checkout-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+  .checkout-btn.is-loading { opacity: 0.7; cursor: progress; }
+
+  .checkout-status { margin-top: 12px; font-size: 0.88rem; min-height: 1.2em; }
+  .checkout-status.form-danger { color: #a5423a; font-weight: 600; }
+
+  .secure-note {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .secure-note a { color: var(--plum); text-decoration: underline; }
+  .lock-icon { font-size: 0.95rem; }
+
+  @media (min-width: 900px) {
+    .checkout-grid { grid-template-columns: 1.5fr 1fr; }
+    .product-row { grid-template-columns: 56px 1fr auto; }
+    .qty-control { grid-column: auto; margin-top: 0; }
+  }
+</style>
+
+<script>
+  // API_BASE points at the standalone contact/checkout server (see server/index.mjs).
+  // Update this if you deploy that server somewhere other than localhost:5000.
+  const API_BASE = "http://localhost:5000";
+
+  type CartItem = { id: string; name: string; price: number; quantity: number };
+
+  const rows = Array.from(document.querySelectorAll<HTMLElement>(".product-row"));
+  const giftBoxInput = document.getElementById("gift-box") as HTMLInputElement | null;
+  const summaryLines = document.getElementById("summary-lines")!;
+  const summaryTotal = document.getElementById("summary-total")!;
+  const checkoutBtn = document.getElementById("checkout-btn") as HTMLButtonElement;
+  const statusEl = document.getElementById("checkout-status")!;
+  const GIFT_BOX_PRICE = 8;
+
+  function readCart(): CartItem[] {
+    return rows
+      .map((row) => {
+        const input = row.querySelector<HTMLInputElement>(".qty-input")!;
+        const quantity = Math.max(0, Math.min(20, parseInt(input.value, 10) || 0));
+        return {
+          id: row.dataset.productId!,
+          name: row.querySelector("h3")!.textContent ?? "",
+          price: parseFloat(row.dataset.productPrice ?? "0"),
+          quantity,
+        };
+      })
+      .filter((item) => item.quantity > 0);
+  }
+
+  function renderSummary() {
+    const cart = readCart();
+    const giftBox = Boolean(giftBoxInput?.checked);
+
+    summaryLines.innerHTML = "";
+
+    if (cart.length === 0) {
+      const li = document.createElement("li");
+      li.className = "summary-empty";
+      li.textContent = "No items selected yet.";
+      summaryLines.appendChild(li);
+    } else {
+      for (const item of cart) {
+        const li = document.createElement("li");
+        li.innerHTML = `<span>${item.name} × ${item.quantity}</span><span>$${(item.price * item.quantity).toFixed(2)}</span>`;
+        summaryLines.appendChild(li);
+      }
+      if (giftBox) {
+        const li = document.createElement("li");
+        li.innerHTML = `<span>Gift box packaging</span><span>$${GIFT_BOX_PRICE.toFixed(2)}</span>`;
+        summaryLines.appendChild(li);
+      }
+    }
+
+    const total =
+      cart.reduce((sum, item) => sum + item.price * item.quantity, 0) +
+      (giftBox && cart.length > 0 ? GIFT_BOX_PRICE : 0);
+
+    summaryTotal.textContent = `$${total.toFixed(2)}`;
+    checkoutBtn.disabled = cart.length === 0;
+  }
+
+  rows.forEach((row) => {
+    const input = row.querySelector<HTMLInputElement>(".qty-input")!;
+    row.querySelector('[data-action="decrement"]')?.addEventListener("click", () => {
+      input.value = String(Math.max(0, (parseInt(input.value, 10) || 0) - 1));
+      renderSummary();
+    });
+    row.querySelector('[data-action="increment"]')?.addEventListener("click", () => {
+      input.value = String(Math.min(20, (parseInt(input.value, 10) || 0) + 1));
+      renderSummary();
+    });
+    input.addEventListener("input", renderSummary);
+  });
+
+  giftBoxInput?.addEventListener("change", renderSummary);
+
+  checkoutBtn.addEventListener("click", async () => {
+    const cart = readCart();
+    if (cart.length === 0) return;
+
+    checkoutBtn.disabled = true;
+    checkoutBtn.classList.add("is-loading");
+    checkoutBtn.querySelector("span")!.textContent = "Redirecting to Stripe...";
+    statusEl.textContent = "";
+    statusEl.className = "checkout-status";
+
+    try {
+      const response = await fetch(`${API_BASE}/create-checkout-session`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json;charset=utf-8" },
+        body: JSON.stringify({
+          items: cart.map(({ id, quantity }) => ({ id, quantity })),
+          giftBox: Boolean(giftBoxInput?.checked),
+        }),
+      });
+
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok || !result?.url) {
+        throw new Error(result?.error || "Could not start checkout. Please try again.");
+      }
+
+      // Stripe's hosted Checkout page takes it from here — card entry,
+      // 3D Secure / SCA verification, and confirmation all happen on stripe.com.
+      window.location.href = result.url;
+    } catch (err) {
+      statusEl.textContent = err instanceof Error ? err.message : "Something went wrong, please try again.";
+      statusEl.classList.add("form-danger");
+      checkoutBtn.disabled = false;
+      checkoutBtn.classList.remove("is-loading");
+      checkoutBtn.querySelector("span")!.textContent = "Proceed to secure checkout";
+    }
+  });
+
+  renderSummary();
+</script>

@@ -18,7 +18,7 @@ original copy and sections.
   `src/styles/global.css`, no CSS framework dependency.
 - **Animation**: every major section fades/slides into view on scroll via
   a small `IntersectionObserver` utility (`src/lib/reveal.ts`), with a
-  subtle parallax on the hero/photobook/contact art panels. Everything
+  subtle parallax on the hero/contact art panels. Everything
   respects `prefers-reduced-motion`.
 - **Security**: the original `server.js` had a Gmail app password
   hardcoded in source. The rebuilt `server/index.mjs` reads credentials
@@ -64,12 +64,3 @@ npm start
 
 If you deploy the API elsewhere, update the `fetch()` URL in
 `src/components/Contact.astro`.
-
-## Notes on assets
-
-The original repo's images/fonts were excluded from the source export
-used to build this rebuild, so hero/product imagery is represented with
-gradient placeholder panels (same approach the original already used for
-its `PhotobookHero` component). Drop real photography into
-`src/assets/` and swap the `.art-plate` / `.card-photo` background
-styles for `<img>` tags whenever you're ready.

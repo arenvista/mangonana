@@ -1,0 +1,364 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout title="Checkout — Mangonanas Miniatures" description="Review your cart and check out securely with Stripe.">
+  <Nav />
+  <main>
+    <section class="checkout-hero">
+      <div class="container">
+        <p class="eyebrow">Your cart</p>
+        <h1>Review &amp; checkout.</h1>
+        <p class="checkout-sub">
+          Every piece can be ordered as-is, mounted as a keychain, or
+          wrapped as a gift — mix and match per item. Payment is handled by
+          Stripe, so we never see or store your card details.
+        </p>
+      </div>
+    </section>
+
+    <section class="checkout section">
+      <div class="container checkout-grid">
+        <div class="checkout-items">
+          <div id="cart-lines" class="cart-lines"></div>
+          <p id="empty-cart" class="empty-cart" hidden>
+            Your cart is empty. <a href="/catalog">Browse the catalog →</a>
+          </p>
+        </div>
+
+        <aside class="checkout-summary">
+          <h2>Order summary</h2>
+          <ul id="summary-lines" class="summary-lines">
+            <li class="summary-empty">No items yet.</li>
+          </ul>
+          <div class="summary-total">
+            <span>Estimated total</span>
+            <strong id="summary-total">$0.00</strong>
+          </div>
+          <p class="summary-note">Shipping is calculated by Stripe at checkout based on your address.</p>
+
+          <button type="button" class="btn btn-primary checkout-btn" id="checkout-btn" disabled>
+            <span>Proceed to secure checkout</span>
+          </button>
+          <p id="checkout-status" class="checkout-status" role="status" aria-live="polite"></p>
+
+          <div class="secure-note">
+            <span class="lock-icon" aria-hidden="true">🔒</span>
+            <span>
+              Payment is processed and verified by
+              <a href="https://stripe.com" target="_blank" rel="noopener noreferrer">Stripe</a>.
+              We never see or store your card number.
+            </span>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .checkout-hero {
+    padding-top: clamp(140px, 18vw, 190px);
+    padding-bottom: 20px;
+    background:
+      radial-gradient(60% 60% at 85% 10%, var(--plum-tint) 0%, transparent 70%),
+      var(--paper);
+  }
+  .checkout-hero h1 { margin-top: 12px; font-size: clamp(2.2rem, 5vw, 3.4rem); }
+  .checkout-sub { margin-top: 16px; max-width: 56ch; color: var(--muted); font-size: 1.05rem; line-height: 1.65; }
+
+  .checkout { background: var(--paper); }
+
+  .checkout-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .cart-lines { display: flex; flex-direction: column; gap: 18px; }
+
+  .empty-cart { padding: 40px 0; color: var(--muted); }
+  .empty-cart a { color: var(--plum); text-decoration: underline; }
+
+  .checkout-summary {
+    position: sticky;
+    top: 110px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--paper-2);
+    padding: 30px;
+  }
+  .checkout-summary h2 { font-size: 1.3rem; }
+
+  .summary-lines { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .summary-lines li { display: flex; justify-content: space-between; font-size: 0.92rem; color: var(--ink-2); gap: 12px; }
+  .summary-lines li span:first-child { max-width: 70%; }
+  .summary-empty { color: var(--muted); font-style: italic; }
+
+  .summary-total {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--serif);
+  }
+  .summary-total strong { font-size: 1.5rem; color: var(--plum); }
+
+  .summary-note { margin-top: 10px; font-size: 0.8rem; color: var(--muted); }
+
+  .checkout-btn { width: 100%; justify-content: center; margin-top: 24px; }
+  .checkout-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+  .checkout-btn.is-loading { opacity: 0.7; cursor: progress; }
+
+  .checkout-status { margin-top: 12px; font-size: 0.88rem; min-height: 1.2em; }
+  .checkout-status.form-danger { color: #a5423a; font-weight: 600; }
+
+  .secure-note {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .secure-note a { color: var(--plum); text-decoration: underline; }
+
+  @media (min-width: 900px) {
+    .checkout-grid { grid-template-columns: 1.5fr 1fr; }
+  }
+</style>
+
+<style is:global>
+  /* Styles for cart line items, rendered client-side into #cart-lines */
+  .cart-line {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 18px;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--paper-2);
+  }
+  .cart-line-swatch { width: 64px; height: 64px; border-radius: 14px; }
+  .cart-line-tone-1 { background: linear-gradient(155deg, #5c3164, #3a1c40); }
+  .cart-line-tone-2 { background: linear-gradient(155deg, #ab7f34, #7a5a22); }
+  .cart-line-tone-3 { background: linear-gradient(155deg, #756b5e, #3a3530); }
+
+  .cart-line-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .cart-line-head h3 { font-size: 1.05rem; }
+  .cart-line-meta { margin-top: 4px; font-size: 0.82rem; color: var(--muted); font-family: var(--mono); }
+  .cart-line-remove { font-size: 0.8rem; color: var(--muted); text-decoration: underline; white-space: nowrap; }
+  .cart-line-remove:hover { color: #a5423a; }
+
+  .cart-line-controls {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .cart-qty { display: inline-flex; align-items: center; border: 1px solid var(--line-2); border-radius: 999px; overflow: hidden; }
+  .cart-qty-btn { width: 32px; height: 32px; font-size: 1rem; background: var(--paper); transition: background-color var(--dur-1) var(--ease-out); }
+  .cart-qty-btn:hover { background: var(--plum-tint); }
+  .cart-qty-value { width: 36px; text-align: center; font-family: var(--mono); font-size: 0.85rem; }
+
+  .cart-addons { display: flex; flex-wrap: wrap; gap: 14px; }
+  .cart-addon-label { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer; }
+  .cart-addon-label input { width: 16px; height: 16px; accent-color: var(--plum); }
+
+  .cart-line-price { margin-top: 14px; text-align: right; font-family: var(--serif); font-size: 1.1rem; color: var(--plum); }
+
+  @media (min-width: 640px) {
+    .cart-line { grid-template-columns: 64px 1fr auto; align-items: center; }
+    .cart-line-price { margin-top: 0; }
+  }
+</style>
+
+<script>
+  import { CATALOG, KEYCHAIN_ADDON, GIFT_WRAP_ADDON, SIZE_DELTAS, formatPrice, findItem } from "../lib/catalog";
+  import { getCart, updateLine, removeLine, type CartLine } from "../lib/cart";
+
+  const API_BASE = "http://localhost:5000";
+
+  const linesContainer = document.getElementById("cart-lines")!;
+  const emptyMsg = document.getElementById("empty-cart") as HTMLElement;
+  const summaryLines = document.getElementById("summary-lines")!;
+  const summaryTotal = document.getElementById("summary-total")!;
+  const checkoutBtn = document.getElementById("checkout-btn") as HTMLButtonElement;
+  const statusEl = document.getElementById("checkout-status")!;
+
+  function lineTotal(line: CartLine): number {
+    const item = findItem(line.itemId);
+    if (!item) return 0;
+    const unit = item.basePrice + (SIZE_DELTAS[line.size] ?? 0);
+    const addons = (line.keychain ? KEYCHAIN_ADDON : 0) + (line.giftWrap ? GIFT_WRAP_ADDON : 0);
+    return (unit + addons) * line.quantity;
+  }
+
+  function render() {
+    const cart = getCart();
+    linesContainer.innerHTML = "";
+    emptyMsg.hidden = cart.length > 0;
+    checkoutBtn.disabled = cart.length === 0;
+
+    for (const line of cart) {
+      const item = findItem(line.itemId);
+      if (!item) continue;
+
+      const el = document.createElement("div");
+      el.className = "cart-line";
+      el.innerHTML = `
+        <div class="cart-line-swatch cart-line-tone-${item.tone}"></div>
+        <div>
+          <div class="cart-line-head">
+            <div>
+              <h3>${item.name}</h3>
+              <p class="cart-line-meta">${item.size}</p>
+            </div>
+            <button type="button" class="cart-line-remove" data-remove="${line.cartId}">Remove</button>
+          </div>
+          <div class="cart-line-controls">
+            <div class="cart-qty">
+              <button type="button" class="cart-qty-btn" data-decrement="${line.cartId}" aria-label="Decrease quantity">−</button>
+              <span class="cart-qty-value">${line.quantity}</span>
+              <button type="button" class="cart-qty-btn" data-increment="${line.cartId}" aria-label="Increase quantity">+</button>
+            </div>
+            <div class="cart-addons">
+              <label class="cart-addon-label">
+                <input type="checkbox" data-keychain="${line.cartId}" ${line.keychain ? "checked" : ""} />
+                Add as Keychain (+${formatPrice(KEYCHAIN_ADDON)})
+              </label>
+              <label class="cart-addon-label">
+                <input type="checkbox" data-giftwrap="${line.cartId}" ${line.giftWrap ? "checked" : ""} />
+                Add as Gift Wrap option (+${formatPrice(GIFT_WRAP_ADDON)})
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="cart-line-price">${formatPrice(lineTotal(line))}</div>
+      `;
+      linesContainer.appendChild(el);
+    }
+
+    renderSummary(cart);
+    attachLineListeners();
+  }
+
+  function renderSummary(cart: CartLine[]) {
+    summaryLines.innerHTML = "";
+    if (cart.length === 0) {
+      const li = document.createElement("li");
+      li.className = "summary-empty";
+      li.textContent = "No items yet.";
+      summaryLines.appendChild(li);
+      summaryTotal.textContent = "$0.00";
+      return;
+    }
+
+    let total = 0;
+    for (const line of cart) {
+      const item = findItem(line.itemId);
+      if (!item) continue;
+      const t = lineTotal(line);
+      total += t;
+      const li = document.createElement("li");
+      li.innerHTML = `<span>${item.name} (${line.size}) × ${line.quantity}</span><span>${formatPrice(t)}</span>`;
+      summaryLines.appendChild(li);
+    }
+    summaryTotal.textContent = formatPrice(total);
+  }
+
+  function attachLineListeners() {
+    linesContainer.querySelectorAll<HTMLButtonElement>("[data-remove]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        removeLine(btn.dataset.remove!);
+        render();
+      });
+    });
+    linesContainer.querySelectorAll<HTMLButtonElement>("[data-increment]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const cart = getCart();
+        const line = cart.find((l) => l.cartId === btn.dataset.increment);
+        if (line) updateLine(line.cartId, { quantity: Math.min(20, line.quantity + 1) });
+        render();
+      });
+    });
+    linesContainer.querySelectorAll<HTMLButtonElement>("[data-decrement]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const cart = getCart();
+        const line = cart.find((l) => l.cartId === btn.dataset.decrement);
+        if (!line) return;
+        if (line.quantity <= 1) {
+          removeLine(line.cartId);
+        } else {
+          updateLine(line.cartId, { quantity: line.quantity - 1 });
+        }
+        render();
+      });
+    });
+    linesContainer.querySelectorAll<HTMLInputElement>("[data-keychain]").forEach((input) => {
+      input.addEventListener("change", () => {
+        updateLine(input.dataset.keychain!, { keychain: input.checked });
+        render();
+      });
+    });
+    linesContainer.querySelectorAll<HTMLInputElement>("[data-giftwrap]").forEach((input) => {
+      input.addEventListener("change", () => {
+        updateLine(input.dataset.giftwrap!, { giftWrap: input.checked });
+        render();
+      });
+    });
+  }
+
+  checkoutBtn.addEventListener("click", async () => {
+    const cart = getCart();
+    if (cart.length === 0) return;
+
+    checkoutBtn.disabled = true;
+    checkoutBtn.classList.add("is-loading");
+    checkoutBtn.querySelector("span")!.textContent = "Redirecting to Stripe...";
+    statusEl.textContent = "";
+    statusEl.className = "checkout-status";
+
+    try {
+      const response = await fetch(`${API_BASE}/create-checkout-session`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json;charset=utf-8" },
+        body: JSON.stringify({
+          items: cart.map(({ itemId, size, quantity, keychain, giftWrap }) => ({
+            id: itemId,
+            size,
+            quantity,
+            keychain,
+            giftWrap,
+          })),
+        }),
+      });
+
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok || !result?.url) {
+        throw new Error(result?.error || "Could not start checkout. Please try again.");
+      }
+
+      window.location.href = result.url;
+    } catch (err) {
+      statusEl.textContent = err instanceof Error ? err.message : "Something went wrong, please try again.";
+      statusEl.classList.add("form-danger");
+      checkoutBtn.disabled = false;
+      checkoutBtn.classList.remove("is-loading");
+      checkoutBtn.querySelector("span")!.textContent = "Proceed to secure checkout";
+    }
+  });
+
+  render();
+  window.addEventListener("cart:updated", render);
+</script>
