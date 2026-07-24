@@ -6,10 +6,7 @@ interface Props {
   description?: string;
 }
 
-const {
-  title,
-  description = "Mangonanas Miniatures — hand-sculpted custom miniatures, keychains, and figurines. 390+ five-star reviews on Etsy.",
-} = Astro.props;
+const { title, description = "Handmade polymer clay miniatures — Pokémon, Studio Ghibli, and custom sculptures." } = Astro.props;
 ---
 
 <!doctype html>
@@ -17,23 +14,24 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#f7f2e7" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#F6C992" />
     <title>{title}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <slot />
-    <script>
-      import { initScrollReveal, initParallax } from "../lib/reveal";
 
-      document.addEventListener("DOMContentLoaded", () => {
-        initScrollReveal();
-        initParallax();
-      });
+    <script>
+      import { initReveals, initCountUps } from "../lib/reveal";
+      initReveals();
+      initCountUps();
     </script>
   </body>
 </html>

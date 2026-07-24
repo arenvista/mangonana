@@ -1,95 +1,87 @@
 /**
- * Scroll-reveal utility.
- *
- * Any element marked with `data-reveal` (optionally `data-reveal="scale|left|right"`)
- * fades/slides into place the first time it crosses the viewport threshold.
- * Siblings sharing a `data-reveal-group` get an automatic stagger via
- * the `--reveal-delay` custom property, driven by their DOM order.
+ * Small motion utilities shared across pages.
+ * All of them no-op gracefully under prefers-reduced-motion (the CSS side
+ * of the reveal system already forces content visible in that case).
  */
 
-const REVEAL_SELECTOR = "[data-reveal]";
-const STAGGER_MS = 90;
+const reduceMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-export function initScrollReveal(root: ParentNode = document): void {
-  const targets = Array.from(root.querySelectorAll<HTMLElement>(REVEAL_SELECTOR));
+/** Adds `.scrolled` to an element once the page scrolls past `threshold`px. */
+export function initScrollState(el: Element, threshold = 30): void {
+  const update = () => el.classList.toggle("scrolled", window.scrollY > threshold);
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+}
+
+/** Reveals every [data-reveal] element as it enters the viewport. */
+export function initReveals(): void {
+  const targets = document.querySelectorAll<HTMLElement>("[data-reveal]");
   if (targets.length === 0) return;
 
-  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (prefersReduced) {
-    targets.forEach((el) => el.classList.add("is-visible"));
+  if (reduceMotion() || !("IntersectionObserver" in window)) {
+    targets.forEach((t) => t.classList.add("revealed"));
     return;
   }
 
-  // Auto-stagger elements grouped under the same parent + group key.
-  const groups = new Map<string, HTMLElement[]>();
-  targets.forEach((el) => {
-    const groupKey = el.dataset.revealGroup ?? el.parentElement?.dataset.revealGroup;
-    if (!groupKey) return;
-    const list = groups.get(groupKey) ?? [];
-    list.push(el);
-    groups.set(groupKey, list);
-  });
-  groups.forEach((list) => {
-    list.forEach((el, i) => {
-      el.style.setProperty("--reveal-delay", `${Math.min(i * STAGGER_MS, 540)}ms`);
-    });
-  });
-
-  const observer = new IntersectionObserver(
+  const io = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
         if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
+          entry.target.classList.add("revealed");
+          io.unobserve(entry.target);
         }
       }
     },
-    { threshold: 0.16, rootMargin: "0px 0px -8% 0px" }
+    { threshold: 0.18, rootMargin: "0px 0px -8% 0px" }
   );
 
-  targets.forEach((el) => observer.observe(el));
+  targets.forEach((t) => io.observe(t));
 }
 
 /**
- * Subtle parallax: elements with `data-parallax="0.2"` drift vertically
- * at a fraction of the scroll speed while in view. Disabled under
- * reduced-motion and re-computed with rAF for smoothness.
+ * Counts <span data-count="500" data-suffix="+"> up from 0 when it scrolls
+ * into view. ~1s, eased, single run.
  */
-export function initParallax(root: ParentNode = document): void {
-  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const els = Array.from(root.querySelectorAll<HTMLElement>("[data-parallax]"));
-  if (prefersReduced || els.length === 0) return;
+export function initCountUps(): void {
+  const targets = document.querySelectorAll<HTMLElement>("[data-count]");
+  if (targets.length === 0) return;
 
-  let ticking = false;
-
-  const update = () => {
-    const viewportH = window.innerHeight;
-    for (const el of els) {
-      const speed = parseFloat(el.dataset.parallax ?? "0.15");
-      const rect = el.getBoundingClientRect();
-      const progress = (rect.top + rect.height / 2 - viewportH / 2) / viewportH;
-      el.style.transform = `translate3d(0, ${(-progress * speed * 100).toFixed(2)}px, 0)`;
-    }
-    ticking = false;
+  const finish = (el: HTMLElement) => {
+    el.textContent = `${el.dataset.count}${el.dataset.suffix ?? ""}`;
   };
 
-  const onScroll = () => {
-    if (!ticking) {
-      window.requestAnimationFrame(update);
-      ticking = true;
-    }
+  if (reduceMotion() || !("IntersectionObserver" in window)) {
+    targets.forEach(finish);
+    return;
+  }
+
+  const animate = (el: HTMLElement) => {
+    const end = parseFloat(el.dataset.count ?? "0");
+    const suffix = el.dataset.suffix ?? "";
+    const decimals = (el.dataset.count ?? "").split(".")[1]?.length ?? 0;
+    const start = performance.now();
+    const dur = 1100;
+
+    const tick = (now: number) => {
+      const p = Math.min((now - start) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = `${(end * eased).toFixed(decimals)}${suffix}`;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
   };
 
-  update();
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", onScroll);
-}
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          animate(entry.target as HTMLElement);
+          io.unobserve(entry.target);
+        }
+      }
+    },
+    { threshold: 0.6 }
+  );
 
-/** Toggles a `.scrolled` class on an element once the page scrolls past `offset`. */
-export function initScrollState(el: HTMLElement, offset = 40): void {
-  const onScroll = () => {
-    el.classList.toggle("scrolled", window.scrollY > offset);
-  };
-  onScroll();
-  window.addEventListener("scroll", onScroll, { passive: true });
+  targets.forEach((t) => io.observe(t));
 }

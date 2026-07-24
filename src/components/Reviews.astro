@@ -1,139 +1,91 @@
 ---
 const reviews = [
-  { id: 1, quote: "This was such a meaningful gift! The artist captured every little detail perfectly, and the whole process was smooth from start to finish. I highly recommend them.", author: "Ryan Clark", date: "Jun 17, 2026" },
-  { id: 2, quote: "Exceeded my expectations and the sculpture looked amazing! I'm so excited to give this custom miniature to my dad.", author: "Jenna", date: "Jun 15, 2026" },
-  { id: 3, quote: "Can't recommend this shop enough. I sent in reference photos for a custom piece, and the final sculpture captured the pose and expression so well.", author: "Cara", date: "Jun 14, 2026" },
-  { id: 4, quote: "Fantastic service from start to finish. The team helped me choose the right base and finish for my miniature, and the final result looked polished and professional.", author: "James", date: "Jun 16, 2026" },
-  { id: 5, quote: "I needed a custom sculpture as a last-minute anniversary gift, and they completed it faster than I expected. The quality and likeness were excellent.", author: "Mina", date: "Jun 18, 2026" },
-  { id: 6, quote: "Really appreciated how patient the team was while I adjusted the design details. They even caught a small issue with the pose before production.", author: "Ethan", date: "Jun 20, 2026" },
-  { id: 7, quote: "I've ordered custom miniatures here more than once, and every piece has been detailed, well-crafted, and delivered exactly when promised.", author: "Sofia", date: "Jun 22, 2026" },
-  { id: 8, quote: "The final sculpture was incredibly detailed and looked even better in person than in the preview. Communication was clear throughout the process.", author: "Daniel", date: "Jun 24, 2026" },
-  { id: 9, quote: "Super friendly, quick, and detail-oriented. They made what could have been a stressful custom order feel simple and exciting from beginning to end.", author: "Priya", date: "Jun 26, 2026" },
+  { quote: "The Totoro on my monitor stand gets more compliments than the monitor.", name: "Maya R.", tag: "Ghibli set" },
+  { quote: "Sent one blurry photo of my cat. Got back my cat, but 5cm tall and smug.", name: "Devon K.", tag: "Custom order" },
+  { quote: "The keychain has survived two years on my house keys. Zero chips.", name: "Priya S.", tag: "Keychain mount" },
+  { quote: "Gift-wrapped capybara for my sister. She cried. 10/10.", name: "Jon A.", tag: "Gift wrap" },
+  { quote: "Charizard's tail flame is translucent. HOW. It glows by the window.", name: "Lena M.", tag: "Catalog piece" },
+  { quote: "Progress photos at every step — felt like watching it hatch.", name: "Sam T.", tag: "Custom order" },
 ];
 ---
 
-<section class="reviews">
-  <div class="container">
-    <div class="section-head" data-reveal>
-      <p class="eyebrow">What customers say</p>
-      <h2>390+ five-star reviews on Etsy.</h2>
-    </div>
+<section class="reviews section">
+  <div class="container reviews-head" data-reveal>
+    <p class="eyebrow">From the shelf owners</p>
+    <h2>Read the room(s) they live in.</h2>
   </div>
 
-  <div class="reviews-viewport" data-reveal="scale">
-    <button class="rail-btn prev" id="reviews-prev" aria-label="Previous reviews">‹</button>
-    <div class="reviews-track" id="reviews-track">
-      {reviews.map((r) => (
-        <article class="review-card">
-          <div class="review-stars" aria-hidden="true">★★★★★</div>
-          <p class="review-quote">"{r.quote}"</p>
-          <div class="review-foot">
-            <span class="review-author">{r.author}</span>
-            <span class="review-date">{r.date}</span>
-          </div>
-        </article>
-      ))}
-    </div>
-    <button class="rail-btn next" id="reviews-next" aria-label="Next reviews">›</button>
-  </div>
-
-  <div class="container">
-    <div class="reviews-cta" data-reveal>
-      <a href="#connect" class="btn btn-ghost">View all 390+ reviews on Etsy ↗</a>
-    </div>
+  <!-- Two counter-drifting rows of review cards; hover to pause and read -->
+  <div class="rev-rows">
+    {[false, true].map((reverse) => (
+      <div class={`rev-viewport${reverse ? " is-reverse" : ""}`}>
+        <div class="rev-track">
+          {[0, 1].map(() => (
+            <div class="rev-run" aria-hidden={undefined}>
+              {reviews.map((r) => (
+                <figure class="rev-card">
+                  <blockquote>“{r.quote}”</blockquote>
+                  <figcaption>
+                    <strong>{r.name}</strong>
+                    <span class="rev-tag">{r.tag}</span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
   </div>
 </section>
 
 <style>
-  .reviews { background: var(--paper); }
+  .reviews { background: var(--powder-light); overflow: hidden; }
+  .reviews-head h2 { margin-top: 16px; font-size: clamp(1.8rem, 4vw, 2.8rem); }
 
-  .reviews-viewport {
-    position: relative;
-    margin-top: 44px;
-  }
+  .rev-rows { margin-top: 44px; display: flex; flex-direction: column; gap: 20px; }
+  .rev-viewport { overflow: hidden; }
 
-  .reviews-track {
+  .rev-track {
     display: flex;
-    gap: 22px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding: 4px clamp(24px, 6vw, calc((100vw - var(--container)) / 2 + 24px)) 20px;
-    scrollbar-width: none;
+    width: max-content;
+    animation: marquee-x 48s linear infinite;
   }
-  .reviews-track::-webkit-scrollbar { display: none; }
+  .is-reverse .rev-track { animation-direction: reverse; animation-duration: 56s; }
+  .rev-viewport:hover .rev-track { animation-play-state: paused; }
 
-  .review-card {
-    flex: 0 0 auto;
-    width: min(340px, 82vw);
-    scroll-snap-align: start;
-    border: 1px solid var(--line);
+  .rev-run { display: flex; gap: 20px; padding-right: 20px; }
+
+  .rev-card {
+    width: 330px;
+    flex-shrink: 0;
+    background: var(--card);
+    border: 2px solid var(--slate);
     border-radius: var(--radius-md);
-    padding: 30px;
-    background: var(--paper-2);
+    padding: 24px 26px;
+    box-shadow: 4px 4px 0 var(--slate);
+    transition: transform var(--dur-1) var(--ease-squash);
+  }
+  .rev-card:hover { transform: translateY(-4px) rotate(-0.6deg); }
+
+  .rev-card blockquote { font-size: 0.98rem; line-height: 1.55; color: var(--ink-2); }
+  .rev-card figcaption {
+    margin-top: 16px;
     display: flex;
-    flex-direction: column;
-  }
-
-  .review-stars { color: var(--gold); letter-spacing: 3px; margin-bottom: 16px; }
-
-  .review-quote {
-    font-family: var(--serif);
-    font-size: 1.08rem;
-    line-height: 1.55;
-    flex-grow: 1;
-  }
-
-  .review-foot {
-    margin-top: 22px;
-    padding-top: 16px;
-    border-top: 1px solid var(--line);
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.82rem;
-  }
-  .review-author { font-weight: 600; }
-  .review-date { color: var(--muted); }
-
-  .rail-btn {
-    display: none;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    font-size: 1.6rem;
-    line-height: 1;
     align-items: center;
-    justify-content: center;
-    z-index: 2;
-    transition: background-color var(--dur-1) var(--ease-out);
+    justify-content: space-between;
+    gap: 10px;
   }
-  .rail-btn:hover { background: var(--paper-3); }
-  .rail-btn.prev { left: 8px; }
-  .rail-btn.next { right: 8px; }
-
-  .reviews-cta { margin-top: 40px; text-align: center; }
-
-  @media (min-width: 900px) {
-    .rail-btn { display: flex; }
+  .rev-card strong { font-family: var(--display); }
+  .rev-tag {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--teal-tint);
+    color: var(--teal-dark);
+    border-radius: 999px;
+    padding: 4px 10px;
+    white-space: nowrap;
   }
 </style>
-
-<script>
-  const track = document.getElementById("reviews-track");
-  const prev = document.getElementById("reviews-prev");
-  const next = document.getElementById("reviews-next");
-
-  const scrollByCard = (dir: number) => {
-    if (!track) return;
-    const card = track.querySelector<HTMLElement>(".review-card");
-    const distance = (card?.offsetWidth ?? 320) + 22;
-    track.scrollBy({ left: dir * distance, behavior: "smooth" });
-  };
-
-  prev?.addEventListener("click", () => scrollByCard(-1));
-  next?.addEventListener("click", () => scrollByCard(1));
-</script>

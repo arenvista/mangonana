@@ -199,9 +199,30 @@ const categories = ["all", "pokemon", "ghibli", "other"] as const;
     font-family: var(--serif);
     font-size: 1.2rem;
     color: var(--plum);
+    display: inline-block;
+  }
+  .card-price.tick { animation: price-tick 0.35s var(--ease-out); }
+  @keyframes price-tick {
+    0% { transform: translateY(0); opacity: 1; }
+    40% { transform: translateY(-4px); opacity: 0.4; }
+    100% { transform: translateY(0); opacity: 1; }
   }
 
   .card-add { width: 100%; justify-content: center; margin-top: 18px; }
+  /* Quick success pulse when a piece lands in the cart */
+  .card-add.added {
+    background: var(--gold);
+    border-color: var(--gold);
+    animation: add-pulse 0.45s var(--ease-out);
+  }
+  @keyframes add-pulse {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card-add.added, .card-price.tick { animation: none; }
+  }
 
   .no-results {
     margin-top: 30px;
@@ -238,17 +259,23 @@ const categories = ["all", "pokemon", "ghibli", "other"] as const;
   // --- price display, updates as size changes ---
   const selects = Array.from(document.querySelectorAll<HTMLSelectElement>(".size-select"));
 
-  function updatePrice(select: HTMLSelectElement) {
+  function updatePrice(select: HTMLSelectElement, animate = false) {
     const base = parseInt(select.dataset.basePrice ?? "0", 10);
     const size = select.value as Size;
     const total = base + (SIZE_DELTAS[size] ?? 0);
-    const priceEl = document.querySelector(`[data-price-for="${select.dataset.itemId}"]`);
-    if (priceEl) priceEl.textContent = formatPrice(total);
+    const priceEl = document.querySelector<HTMLElement>(`[data-price-for="${select.dataset.itemId}"]`);
+    if (!priceEl) return;
+    priceEl.textContent = formatPrice(total);
+    if (animate) {
+      priceEl.classList.remove("tick");
+      void priceEl.offsetWidth;
+      priceEl.classList.add("tick");
+    }
   }
 
   selects.forEach((select) => {
     updatePrice(select);
-    select.addEventListener("change", () => updatePrice(select));
+    select.addEventListener("change", () => updatePrice(select, true));
   });
 
   // --- add to cart ---
@@ -262,9 +289,11 @@ const categories = ["all", "pokemon", "ghibli", "other"] as const;
       const original = span.textContent;
       span.textContent = "Added ✓";
       btn.disabled = true;
+      btn.classList.add("added");
       window.setTimeout(() => {
         span.textContent = original;
         btn.disabled = false;
+        btn.classList.remove("added");
       }, 1100);
     });
   });

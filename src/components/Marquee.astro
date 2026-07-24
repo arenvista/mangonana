@@ -1,0 +1,93 @@
+---
+const words = ["Pokémon", "Studio Ghibli", "Capybaras", "Keychains", "Custom orders", "Gift wrapped"];
+const stats = [
+  { value: "4.9", suffix: "", label: "average rating", decimals: true },
+  { value: "500", suffix: "+", label: "pieces shipped" },
+  { value: "100", suffix: "%", label: "sculpted by hand" },
+  { value: "1", suffix: "", label: "of one, every time" },
+];
+---
+
+<!-- Dark marquee band, straight out of the hero wave -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    {[0, 1].map(() => (
+      <span class="marquee-run">
+        {words.map((w) => (
+          <span class="marquee-item">{w} <span class="star">✦</span></span>
+        ))}
+      </span>
+    ))}
+  </div>
+</div>
+
+<!-- Review / stat pills, nodcoding-style, numbers count up on scroll -->
+<section class="stats">
+  <div class="container stats-row">
+    {stats.map((s, i) => (
+      <div class="stat" data-reveal="pop" style={`--reveal-delay:${i * 90}ms`}>
+        <strong><span data-count={s.value} data-suffix={s.suffix}>0</span></strong>
+        <span class="stat-label">{s.label}</span>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .marquee {
+    background: var(--slate);
+    color: var(--paper);
+    padding-block: 16px;
+    overflow: hidden;
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-x 26s linear infinite;
+  }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  .marquee-run { display: flex; }
+  .marquee-item {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    white-space: nowrap;
+    padding-inline: 18px;
+  }
+  .star { color: var(--peach); padding-left: 18px; }
+
+  .stats { background: var(--paper); padding-block: clamp(40px, 6vw, 70px) 0; }
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .stat {
+    background: var(--card);
+    border: 2px solid var(--slate);
+    border-radius: var(--radius-md);
+    padding: 22px 24px;
+    text-align: center;
+    box-shadow: 4px 4px 0 var(--slate); /* flat sticker shadow */
+    transition: transform var(--dur-1) var(--ease-squash), box-shadow var(--dur-1) var(--ease-out);
+  }
+  .stat:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--slate); }
+  .stat strong {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+    color: var(--teal);
+    display: block;
+  }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  @media (min-width: 800px) {
+    .stats-row { grid-template-columns: repeat(4, 1fr); }
+  }
+</style>

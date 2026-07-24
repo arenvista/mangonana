@@ -1,0 +1,90 @@
+---
+const features = [
+  {
+    icon: "✋",
+    color: "peach",
+    title: "Sculpted by hand",
+    copy: "No molds, no 3D printing. Every piece starts as a block of polymer clay and a reference photo.",
+  },
+  {
+    icon: "🎨",
+    color: "rose",
+    title: "Painted to match",
+    copy: "Colors are mixed and layered to match your reference — down to Pikachu's exact cheek red.",
+  },
+  {
+    icon: "🔑",
+    color: "teal",
+    title: "Desk piece or keychain",
+    copy: "Any sculpture can be mounted as a keychain or wrapped as a gift, per item, at checkout.",
+  },
+  {
+    icon: "📦",
+    color: "steel",
+    title: "Packed like treasure",
+    copy: "Foam-nested, double-boxed, and tracked. Your miniature survives the mail, guaranteed.",
+  },
+];
+---
+
+<section class="why section">
+  <div class="container">
+    <div class="why-head" data-reveal>
+      <p class="eyebrow">Why Mangonanas?</p>
+      <h2>Craft you can see from across the room.</h2>
+    </div>
+
+    <div class="why-grid">
+      {features.map((f, i) => (
+        <article class={`why-card is-${f.color}`} data-reveal="up" style={`--reveal-delay:${i * 100}ms`}>
+          <span class="why-icon">{f.icon}</span>
+          <h3>{f.title}</h3>
+          <p>{f.copy}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .why { background: var(--paper); }
+  .why-head { max-width: 60ch; }
+  .why-head h2 { margin-top: 16px; font-size: clamp(1.8rem, 4vw, 2.8rem); }
+
+  .why-grid {
+    margin-top: 44px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .why-card {
+    border-radius: var(--radius-md);
+    padding: 30px 26px;
+    transition: transform var(--dur-1) var(--ease-squash);
+  }
+  .why-card:hover { transform: translateY(-6px) rotate(-0.5deg); }
+  .is-peach { background: var(--peach-tint); }
+  .is-rose  { background: var(--rose-tint); }
+  .is-teal  { background: var(--teal-tint); }
+  .is-steel { background: var(--powder-light); }
+
+  .why-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    font-size: 1.5rem;
+    background: var(--card);
+    border: 2px solid var(--slate);
+    border-radius: 42% 58% 56% 44% / 48% 44% 56% 52%; /* blobby, on theme */
+    transition: transform var(--dur-1) var(--ease-squash);
+  }
+  .why-card:hover .why-icon { transform: rotate(-8deg) scale(1.08); }
+
+  .why-card h3 { margin-top: 18px; font-size: 1.2rem; }
+  .why-card p { margin-top: 10px; color: var(--ink-2); font-size: 0.95rem; }
+
+  @media (min-width: 640px) { .why-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) { .why-grid { grid-template-columns: repeat(4, 1fr); } }
+</style>

@@ -1,0 +1,71 @@
+---
+---
+
+<section class="cta">
+  <div class="container cta-inner" data-reveal="scale">
+    <span class="cta-blob" aria-hidden="true">
+      <span class="eye eye-l"></span>
+      <span class="eye eye-r"></span>
+    </span>
+    <p class="eyebrow cta-eyebrow">Custom orders open</p>
+    <h2>Can't find your character? Send a photo.</h2>
+    <p class="cta-copy">
+      Upload one reference image and we'll reply with a quote in 1–3 business
+      days. No payment until you say go.
+    </p>
+    <a href="/custom-order" class="btn cta-btn">Start a custom order <span class="arrow">→</span></a>
+  </div>
+</section>
+
+<style>
+  .cta { background: var(--paper); padding-block: clamp(30px, 5vw, 70px); }
+
+  .cta-inner {
+    position: relative;
+    background: var(--slate);
+    color: var(--paper);
+    border-radius: var(--radius-lg);
+    padding: clamp(48px, 7vw, 90px) clamp(28px, 6vw, 80px);
+    text-align: center;
+    overflow: hidden;
+  }
+  .cta-inner h2 {
+    margin-top: 18px;
+    font-size: clamp(1.9rem, 4.4vw, 3rem);
+    max-width: 22ch;
+    margin-inline: auto;
+  }
+  .cta-eyebrow { background: transparent; color: var(--peach); border-color: var(--peach); }
+  .cta-copy { margin-top: 16px; max-width: 48ch; margin-inline: auto; color: var(--powder); }
+
+  .cta-btn { margin-top: 32px; background: var(--peach); color: var(--slate); }
+  .cta-btn:hover { background: var(--rose); }
+
+  /* a shy clay blob peeking over the panel's bottom edge, eyes tracking up */
+  .cta-blob {
+    position: absolute;
+    left: 8%;
+    bottom: -46px;
+    width: 120px;
+    aspect-ratio: 1;
+    background: var(--rose);
+    animation: blob-morph 9s ease-in-out infinite, peek 6s ease-in-out infinite;
+  }
+  .cta-blob .eye {
+    position: absolute;
+    top: 22%;
+    width: 9px;
+    height: 14px;
+    border-radius: 999px;
+    background: var(--slate);
+    animation: blink 5s ease-in-out infinite;
+  }
+  .cta-blob .eye-l { left: 32%; }
+  .cta-blob .eye-r { right: 32%; }
+  @keyframes peek {
+    0%, 100% { translate: 0 12px; }
+    50% { translate: 0 -8px; }
+  }
+
+  @media (max-width: 640px) { .cta-blob { display: none; } }
+</style>

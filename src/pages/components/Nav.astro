@@ -56,89 +56,106 @@ const links = [
     inset-inline: 0;
     top: 0;
     z-index: 100;
-    padding-block: 20px;
-    transition: padding var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out),
-      box-shadow var(--dur-1) var(--ease-out);
-  }
-  .nav.scrolled {
-    padding-block: 10px;
-    background: rgba(251, 244, 232, 0.9);
-    backdrop-filter: blur(14px);
-    border-bottom: 2px solid var(--slate);
+    padding-block: 22px;
+    transition: padding var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out), backdrop-filter var(--dur-1) var(--ease-out);
   }
 
-  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+  .nav.scrolled {
+    padding-block: 12px;
+    background: rgba(247, 242, 231, 0.85);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 12px 30px -18px rgba(28, 26, 23, 0.3);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
 
   .brand {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    font-family: var(--display);
-    font-weight: 800;
-    font-size: 1.15rem;
+    font-family: var(--serif);
+    font-size: 1.2rem;
   }
-  /* blobby logo mark that wiggles on hover */
+
   .brand-mark {
-    width: 38px;
-    height: 38px;
-    border-radius: 46% 54% 52% 48% / 50% 46% 54% 50%;
-    background: var(--teal);
-    color: #fff;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--plum);
+    color: var(--paper);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 1rem;
-    border: 2px solid var(--slate);
-    transition: transform var(--dur-1) var(--ease-squash), background-color var(--dur-1) var(--ease-out);
   }
-  .brand:hover .brand-mark { transform: rotate(-10deg) scale(1.1); background: var(--rose); }
 
-  .links { display: none; align-items: center; gap: 6px; font-size: 0.95rem; font-weight: 600; }
+  .links {
+    display: none;
+    align-items: center;
+    gap: 34px;
+    font-size: 0.95rem;
+  }
+
   .links a {
-    padding: 8px 14px;
-    border-radius: 999px;
-    transition: background-color var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-squash);
+    position: relative;
+    opacity: 0.75;
+    transition: opacity var(--dur-1) var(--ease-out);
   }
-  .links a:hover { background: var(--peach-tint); transform: translateY(-2px); }
+  .links a:hover { opacity: 1; }
+  .links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: width var(--dur-1) var(--ease-out);
+  }
+  .links a:hover::after { width: 100%; }
 
-  .nav-cta { display: none; align-items: center; gap: 14px; }
+  .nav-cta { display: none; align-items: center; gap: 16px; }
 
   .cart-link {
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    border: 2px solid var(--slate);
-    background: var(--card);
+    border: 1px solid var(--line-2);
     font-size: 1.05rem;
-    transition: transform var(--dur-1) var(--ease-squash), background-color var(--dur-1) var(--ease-out);
+    transition: background-color var(--dur-1) var(--ease-out);
   }
-  .cart-link:hover { background: var(--teal-tint); transform: translateY(-2px) rotate(-6deg); }
-
+  .cart-link:hover { background: var(--plum-tint); }
   .cart-count {
     position: absolute;
-    top: -6px;
-    right: -6px;
-    min-width: 19px;
-    height: 19px;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
     padding: 0 4px;
     border-radius: 999px;
-    background: var(--teal);
-    color: #fff;
+    background: var(--plum);
+    color: var(--paper);
     font-family: var(--mono);
     font-size: 0.65rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1.5px solid var(--card);
   }
-  .cart-count.bump { animation: badge-bump 0.45s var(--ease-squash); }
+  /* Pops when the count goes up (class toggled in the script below) */
+  .cart-count.bump { animation: badge-bump 0.45s var(--ease-out); }
   @keyframes badge-bump {
     0% { transform: scale(1); }
-    40% { transform: scale(1.5); background: var(--rose); }
+    40% { transform: scale(1.45); background: var(--gold); }
     100% { transform: scale(1); }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -148,11 +165,8 @@ const links = [
   .btn-small { padding: 11px 24px; font-size: 0.85rem; }
 
   .menu-toggle {
-    width: 42px;
-    height: 42px;
-    border: 2px solid var(--slate);
-    border-radius: 50%;
-    background: var(--card);
+    width: 40px;
+    height: 40px;
     display: inline-flex;
     flex-direction: column;
     align-items: center;
@@ -160,26 +174,29 @@ const links = [
     gap: 6px;
   }
   .menu-toggle span {
-    width: 18px;
-    height: 2px;
-    border-radius: 2px;
-    background: var(--slate);
-    transition: transform var(--dur-1) var(--ease-out);
+    width: 22px;
+    height: 1.5px;
+    background: var(--ink);
+    transition: transform var(--dur-1) var(--ease-out), opacity var(--dur-1) var(--ease-out);
   }
-  .menu-toggle[aria-expanded="true"] span:first-child { transform: translateY(4px) rotate(45deg); }
-  .menu-toggle[aria-expanded="true"] span:last-child { transform: translateY(-4px) rotate(-45deg); }
+  .menu-toggle[aria-expanded="true"] span:first-child { transform: translateY(3.75px) rotate(45deg); }
+  .menu-toggle[aria-expanded="true"] span:last-child { transform: translateY(-3.75px) rotate(-45deg); }
 
   .mobile-menu {
     display: none;
     flex-direction: column;
     gap: 4px;
-    padding: 12px 24px 26px;
-    background: rgba(251, 244, 232, 0.98);
-    border-bottom: 2px solid var(--slate);
+    padding: 10px 24px 26px;
+    background: rgba(247, 242, 231, 0.98);
+    border-bottom: 1px solid var(--line);
   }
   .mobile-menu.open { display: flex; }
-  .mobile-menu a { padding: 12px 4px; font-size: 1.05rem; font-weight: 600; border-bottom: 1px solid var(--line); }
-  .mobile-menu .btn { margin-top: 14px; justify-content: center; border-bottom: none; }
+  .mobile-menu a {
+    padding: 12px 4px;
+    font-size: 1.05rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .mobile-menu .btn { margin-top: 14px; justify-content: center; }
 
   @media (min-width: 900px) {
     .links, .nav-cta { display: inline-flex; }
@@ -216,9 +233,10 @@ const links = [
     if (badge) {
       badge.textContent = String(count);
       badge.hidden = count === 0;
+      // Bump the badge whenever something new lands in the cart
       if (count > previousCount) {
         badge.classList.remove("bump");
-        void badge.offsetWidth;
+        void badge.offsetWidth; // restart the animation
         badge.classList.add("bump");
       }
     }

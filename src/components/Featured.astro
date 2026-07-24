@@ -1,0 +1,128 @@
+---
+import { CATALOG, CATEGORY_LABELS, formatPrice } from "../lib/catalog";
+
+const featured = CATALOG.filter((i) => ["pikachu", "totoro", "capybara"].includes(i.id));
+---
+
+<section class="featured section">
+  <div class="container">
+    <div class="featured-head" data-reveal>
+      <div>
+        <p class="eyebrow">Fan favorites</p>
+        <h2>Meet the regulars.</h2>
+      </div>
+      <a href="/catalog" class="btn btn-ghost">See the full catalog <span class="arrow">→</span></a>
+    </div>
+
+    <div class="featured-grid">
+      {featured.map((item, i) => (
+        <a
+          href="/catalog"
+          class={`feat-card tone-${item.tone}`}
+          data-reveal="up"
+          data-tilt
+          style={`--reveal-delay:${i * 110}ms`}
+        >
+          <div class="card-photo">
+            <span class="photo-badge">{CATEGORY_LABELS[item.category]}</span>
+          </div>
+          <div class="feat-body">
+            <div>
+              <h3>{item.name}</h3>
+              <p>{item.blurb}</p>
+            </div>
+            <span class="feat-price">from {formatPrice(item.basePrice)}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .featured { background: var(--powder-light); }
+  .featured-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .featured-head h2 { margin-top: 16px; font-size: clamp(1.8rem, 4vw, 2.8rem); }
+
+  .featured-grid {
+    margin-top: 44px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    perspective: 900px; /* for the tilt */
+  }
+
+  .feat-card {
+    display: block;
+    background: var(--card);
+    border: 2px solid var(--slate);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: 6px 6px 0 var(--slate);
+    transition: transform var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out);
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+  .feat-card:hover { box-shadow: 10px 10px 0 var(--slate); }
+
+  .card-photo {
+    height: 190px;
+    display: flex;
+    align-items: flex-start;
+    padding: 16px;
+  }
+  .photo-badge {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    background: rgba(48, 82, 92, 0.5);
+    padding: 5px 12px;
+    border-radius: 999px;
+  }
+
+  .feat-body {
+    padding: 22px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .feat-body h3 { font-size: 1.2rem; }
+  .feat-body p { margin-top: 6px; color: var(--muted); font-size: 0.9rem; }
+  .feat-price {
+    font-family: var(--display);
+    font-weight: 800;
+    color: var(--teal);
+    white-space: nowrap;
+  }
+
+  @media (min-width: 800px) { .featured-grid { grid-template-columns: repeat(3, 1fr); } }
+</style>
+
+<script>
+  // Gentle 3D tilt that follows the pointer. Mouse-only, honors reduced motion.
+  const fine = window.matchMedia("(pointer: fine)").matches;
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (fine && !still) {
+    document.querySelectorAll<HTMLElement>("[data-tilt]").forEach((card) => {
+      card.addEventListener("pointermove", (e) => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform = `rotateY(${x * 7}deg) rotateX(${y * -7}deg) translateY(-4px)`;
+      });
+      card.addEventListener("pointerleave", () => {
+        card.style.transform = "";
+      });
+    });
+  }
+</script>
